@@ -8,8 +8,9 @@ import urllib.request
 
 # temporary URL generator just to ensure universal functionality
 url = random.choice(["https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/",
-                    "https://www.politifact.com/factchecks/2021/mar/05/karen-brinson-bell/nc-elections-board-leader-downplays-rule-changes/"])
-
+                     "https://www.politifact.com/factchecks/2021/mar/05/karen-brinson-bell/nc-elections-board-leader-downplays-rule-changes/",
+                     "https://www.politifact.com/factchecks/2021/mar/06/ron-kim/new-york-nursing-homes-not-blanket-immunity-close/"])
+# url = "https://www.politifact.com/factchecks/2021/mar/06/ron-kim/new-york-nursing-homes-not-blanket-immunity-close/"
 
 ''' config processes which will need to be implemented in the class below '''
 # define a user agent to avoid being blocked
@@ -57,9 +58,17 @@ if True:  # container for print statements so I can work on other elements clean
     print("Statement Made:\t", quote_context)
     print("Truth:\t", truth)
 
-    print("Original Source(s):\t", original_source)
+    # print("Original Source(s):\t", original_source)
     print("Original Source Link:\t", original_source_link)
     print("Original Source Text:\t", original_source_text)
 
-    print("Explanation:\n" + "\n".join("{}".format(k) for k in explanation_list))
+    # print("Explanation:\n" + "\n".join("{}".format(k) for k in explanation_list))
     # print("Sources List:\n" + "\n\n".join("{}".format(k) for k in sources_list))
+
+
+''' from the given url get more urls from below, possibly ignore anything with the keyword facebook '''
+url_list = soup.findAll("ul", class_="o-listicle__list")
+url_from_list = random.choice(url_list[0].findAll("article"))  # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
+url_content = url_from_list.findAll("div", "m-statement__content")[0]
+url_link = "https://www.politifact.com" + str(url_content.findAll("a")[0]["href"]).strip()
+print("New Url:\t", url_link)

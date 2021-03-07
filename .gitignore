@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,venv
 
 data.txt
+/Data/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

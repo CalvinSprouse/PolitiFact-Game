@@ -6,6 +6,19 @@ import question_getter
 
 qg = question_getter.QuestionGetter("https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/", True)
 link_list = []
+answer_whitelist = ["true", "pants-fire", "barely-true", "false", "mostly-true", "half-true"]
+
+
+def pick_question():
+    global qg
+    global link_list
+    global answer_whitelist
+    
+    new_url = qg.get_new_url(blacklist=link_list)
+    while question_getter.QuestionGetter(new_url).get_answer() not in answer_whitelist:
+        new_url = qg.get_new_url()
+    link_list.append(new_url)
+    return question_getter.QuestionGetter(new_url)
 
 
 def test_class():
@@ -65,4 +78,4 @@ def collect_data(run_time):
         writer.write(str(dict(Counter(responses_list))))
 
 
-collect_data(60)
+collect_data(15)

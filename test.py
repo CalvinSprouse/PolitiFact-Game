@@ -35,9 +35,7 @@ def test_class():
             break
 
         # rest the question getter to a new random
-        new_url = qg.get_new_url()
-        link_list.append(new_url)
-        qg = question_getter.QuestionGetter(new_url)
+        gq = pick_question()
 
 
 def collect_data(run_time):
@@ -65,9 +63,7 @@ def collect_data(run_time):
 
         # ensure even in failure we get DATA
         try:
-            new_url = qg.get_new_url()
-            link_list.append(new_url)
-            qg = question_getter.QuestionGetter(new_url)
+            qg = pick_question()
         except Exception:
             break
 

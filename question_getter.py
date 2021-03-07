@@ -106,7 +106,7 @@ class QuestionGetter:
     def get_original_source_text(self):
         return self.original_source_text
 
-    def get_new_url(self, blacklist=[], timeout=2, recursion_depth=0):
+    def get_new_url(self, blacklist=[], timeout=1, recursion_depth=0):
         # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
 
         # set the new url to the old url to guarantee access to the generation loop

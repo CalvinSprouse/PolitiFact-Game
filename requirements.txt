@@ -1,3 +1,6 @@
 beautifulsoup4==4.9.3
+PyInputPlus==0.2.12
+PySimpleValidate==0.2.12
 soupsieve==2.2
+stdiomask==0.0.6
 urllib3==1.26.3

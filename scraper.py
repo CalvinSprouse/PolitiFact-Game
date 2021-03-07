@@ -3,22 +3,24 @@ type() is my new best friend
 '''
 
 from bs4 import BeautifulSoup
+import config
 import random
 import urllib.request
 
 # temporary URL generator just to ensure universal functionality
+'''
 url = random.choice(["https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/",
                      "https://www.politifact.com/factchecks/2021/mar/05/karen-brinson-bell/nc-elections-board-leader-downplays-rule-changes/",
-                     "https://www.politifact.com/factchecks/2021/mar/06/ron-kim/new-york-nursing-homes-not-blanket-immunity-close/"])
-# url = "https://www.politifact.com/factchecks/2021/mar/06/ron-kim/new-york-nursing-homes-not-blanket-immunity-close/"
+                     "https://www.politifact.com/factchecks/2021/mar/06/ron-kim/new-york-nursing-homes-not-blanket-immunity-close/"]) '''
+url = "https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/"
 
 ''' config processes which will need to be implemented in the class below '''
-# define a user agent to avoid being blocked
-user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
-headers = {'User-Agent': user_agent, }
+# define a user agent to avoid being blocked (redundant due to config)
+# user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:48.0) Gecko/20100101 Firefox/48.0"
+# headers = {'User-Agent': user_agent, }
 
 # define the request to combine attributes ^
-request = urllib.request.Request(url, None, headers)
+request = urllib.request.Request(url, None, config.HEADERS)
 
 # fetch html
 response = urllib.request.urlopen(request)
@@ -67,8 +69,23 @@ if True:  # container for print statements so I can work on other elements clean
 
 
 ''' from the given url get more urls from below, possibly ignore anything with the keyword facebook '''
-url_list = soup.findAll("ul", class_="o-listicle__list")
-url_from_list = random.choice(url_list[0].findAll("article"))  # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
-url_content = url_from_list.findAll("div", "m-statement__content")[0]
-url_link = "https://www.politifact.com" + str(url_content.findAll("a")[0]["href"]).strip()
+url_list = soup.findAll("ul", class_="o-listicle__list")[0]
+url_from_list = random.choice((url_list.findAll("article")))  # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
+url_content = url_from_list.findAll("div", "m-statement__content")
+url_link = "https://www.politifact.com" + str(url_content[0].findAll("a")[0]["href"]).strip()
 print("New Url:\t", url_link)
+
+''' same version as above but will not generate a dup link '''
+new_url = url
+while new_url == url:
+    url_list = soup.findAll("ul", class_="o-listicle__list")[0]
+    url_from_list = random.choice((url_list.findAll("article")))  # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
+    url_content = url_from_list.findAll("div", "m-statement__content")
+    new_url = "https://www.politifact.com" + str(url_content[0].findAll("a")[0]["href"]).strip()
+print("New Url Non-Dupe:\t", new_url)
+
+
+''' retrieve the persons image for later '''
+image_link = soup.findAll("div", class_="m-statement__author")[0]
+image_link = image_link.findAll("img", class_="c-image__original")[0]["src"]
+# print(image_link)

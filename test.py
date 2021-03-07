@@ -45,6 +45,7 @@ def collect_data(run_time):
 
         # print so I know it's still alive
         print("\nQuestion Num:", question_num)
+        print("Data Status:", str(dict(Counter(responses_list))))
         print(qg.get_person() + " " + qg.get_quote_context() + "\n\t\"" + qg.get_quote() + "\"")
         print("> The correct answer was: " + qg.get_truth())
         responses_list.append(qg.get_truth())
@@ -60,7 +61,8 @@ def collect_data(run_time):
     # output results
     print(dict(Counter(responses_list)))
     with open("data.txt", "w") as writer:
+        writer.write("Total Questions: " + str(question_num))
         writer.write(str(dict(Counter(responses_list))))
 
 
-collect_data(20)
+collect_data(60)

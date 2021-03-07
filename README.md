@@ -9,6 +9,7 @@ Learning experience
 Potential easy/hard mode in easy mode the original source is provided in hard mode you must base your response only on the provided information from the website, slightly meta
 Save questions/responses to give to the player for later
 Find some way to implement lives/max questions
+Consider multithreading for these questions cause holy hell they take forever
 
 -Next question
 -Make sure the QG cant duplicate questions

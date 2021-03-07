@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import config
-import datetime
 import random
 # import time  # was used for testing the timeout
 import urllib.request
@@ -16,7 +15,7 @@ the question getter preforms all the operations in scrapper
 
 
 class QuestionGetter:
-    def __init__(self, url, randomize=False):
+    def __init__(self, url, answer_whitelist, randomize=False):
         self.url = url
 
         # call the website and save the HTML response
@@ -77,7 +76,7 @@ class QuestionGetter:
         self.url_list = soup.findAll("ul", class_="o-listicle__list")[0]
 
         if randomize:
-            self.__init__(self.get_new_url())
+            self.__init__(self.get_new_url(answer_whitelist=answer_whitelist), answer_whitelist=answer_whitelist)
 
     def _signal_alarm(self, sig, tb):
         raise GenerationTimeoutError("timeout")
@@ -106,47 +105,52 @@ class QuestionGetter:
     def get_original_source_text(self):
         return self.original_source_text
 
-    def get_new_url(self, blacklist=[], timeout=1, recursion_depth=0):
-        # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
+    def get_new_url(self, answer_whitelist, link_blacklist=[], timeout=1, recursion_depth=0):
+        if link_blacklist:
+            if self.url not in link_blacklist:
+                link_blacklist.append(self.url)
+        else:
+            link_blacklist = [self.url]
 
-        # set the new url to the old url to guarantee access to the generation loop
-        new_url = self.url
-        if self.url not in blacklist:
-            blacklist.append(self.url)
+        # read in urls from a list of all fact checks
+        page_url = "https://www.politifact.com/factchecks/list/?page=" + str(int(recursion_depth) + 1)
+        request = urllib.request.Request(page_url, None, config.HEADERS)
+        response = urllib.request.urlopen(request)
+        html_doc = response.read()
+        soup = BeautifulSoup(html_doc, "html.parser")
 
-        time_to_run = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
-        try:
-            # constantly generate new urls from the page (randomly) and stop after a time to avoid locking up
-            while new_url in blacklist:
-                url_from_list = random.choice((self.url_list.findAll("article")))  # .prettify() to ... make pretty this is also where the actual link is chosen so randomize this part
-                url_content = url_from_list.findAll("div", "m-statement__content")
-                new_url = "https://www.politifact.com" + str(url_content[0].findAll("a")[0]["href"]).strip()
-                if time_to_run < datetime.datetime.now():
-                    raise GenerationTimeoutError
-            return new_url
-        except GenerationTimeoutError:
-            # now collect a question from the main page using a similar method
-            # because the main page also holds everything in an o-listicle__list
-            # https://www.politifact.com/factchecks/list/?page=2
+        # regen that list because its based off the same sorting methods as the bottom of a normal page
+        self.url_list = soup.findAll("ul", class_="o-listicle__list")[0]
+        full_url_list = self.url_list.findAll("article")  # list of all possible urls
 
-            # regen some soup but on a different page of "lates fact checks"
-            # starting on page 2 because thats where the new stuff should be
-            page_url = "https://www.politifact.com/factchecks/list/?page=" + str(int(recursion_depth) + 2)
-            request = urllib.request.Request(page_url, None, config.HEADERS)
-            response = urllib.request.urlopen(request)
-            html_doc = response.read()
-            soup = BeautifulSoup(html_doc, "html.parser")
+        # iterate through list of urls to avoid randomness until url is found or the next page must be checked
+        for link in full_url_list:
+            url_content = link.findAll("div", "m-statement__content")
+            new_url = "https://www.politifact.com" + str(url_content[0].findAll("a")[0]["href"]).strip()
+            if new_url not in link_blacklist:
+                self.__init__(url=new_url, answer_whitelist=answer_whitelist)
+                if self.get_truth() in answer_whitelist:
+                    # print("Found on depth:", str(recursion_depth))
+                    return new_url
+        return self.get_new_url(link_blacklist=link_blacklist, answer_whitelist=answer_whitelist, timeout=timeout, recursion_depth=recursion_depth+1)
 
-            # regen that list because its based off the same sorting methods as the bottom of a normal page
-            self.url_list = soup.findAll("ul", class_="o-listicle__list")[0]
+    def generate_url_list(self, size, answer_whitelist, generated=[], link_blacklist=[], timeout=1, order_randomized=False):
+        # returns a list of non-duplicate urls so the game can save/randomize
+        generated.append((self.get_new_url(answer_whitelist=answer_whitelist, link_blacklist=link_blacklist, timeout=timeout)))
+        link_blacklist.append(generated[-1])
 
-            # using nasty nasty recursion we can iterate through the pages until we find a new link
-            if recursion_depth < 10:
-                # print("RECURSION OH NO")  # just in case we want to know when ***it*** happens
-                return self.get_new_url(blacklist=blacklist, timeout=timeout, recursion_depth=recursion_depth+1)
-            else:
-                # ensures the computer wont recusively dig through the whole website and do bad things - find a better way to hard stop
-                return "Too Far Buddy"
+        # RECUSION
+        if len(generated) < size:
+            self.generate_url_list(size=size,
+                                   answer_whitelist=answer_whitelist,
+                                   generated=generated,
+                                   link_blacklist=link_blacklist,
+                                   timeout=timeout,
+                                   order_randomized=order_randomized)
+
+        if order_randomized:
+            random.shuffle(generated)
+        return generated
 
 
 class GenerationTimeoutError (Exception):

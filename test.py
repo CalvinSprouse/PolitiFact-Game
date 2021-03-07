@@ -30,15 +30,15 @@ def test_class():
 def collect_data(run_time):
     global qg
     global link_list
-    print("collecting data for " + run_time + " minutes")
+    print("collecting data for " + str(run_time) + " minutes")
 
     # data collection loop to find out how many possible answers there are
     question_num = 0
     responses_list = []
-    time_to_run = datetime.datetime.now() + datetime.timedelta(minutes=time)
+    time_to_run = datetime.datetime.now() + datetime.timedelta(minutes=run_time)
 
     # DATA
-    while time_to_run < datetime.datetime.now():
+    while time_to_run > datetime.datetime.now():
         # iterate and ensure CPU does not explode
         question_num += 1
         time.sleep(0.25)

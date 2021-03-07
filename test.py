@@ -15,7 +15,7 @@ def pick_question():
     global answer_whitelist
     
     new_url = qg.get_new_url(blacklist=link_list)
-    while question_getter.QuestionGetter(new_url).get_answer() not in answer_whitelist:
+    while question_getter.QuestionGetter(new_url).get_truth() not in answer_whitelist:
         new_url = qg.get_new_url(blacklist=link_list)
     link_list.append(new_url)
     return question_getter.QuestionGetter(new_url)
@@ -64,7 +64,8 @@ def collect_data(run_time):
         # ensure even in failure we get DATA
         try:
             qg = pick_question()
-        except Exception:
+        except Exception as oops:
+            print(oops)
             break
 
     # output results

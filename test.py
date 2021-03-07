@@ -16,7 +16,7 @@ def pick_question():
     
     new_url = qg.get_new_url(blacklist=link_list)
     while question_getter.QuestionGetter(new_url).get_answer() not in answer_whitelist:
-        new_url = qg.get_new_url()
+        new_url = qg.get_new_url(blacklist=link_list)
     link_list.append(new_url)
     return question_getter.QuestionGetter(new_url)
 

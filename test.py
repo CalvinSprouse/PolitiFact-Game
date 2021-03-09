@@ -97,7 +97,8 @@ def collect_data(run_time):
 
 # test the quiz maker class
 def quiz_maker_tests():
-    pass
+    quizer = question_getter.QuizMaker(question_generator=qg)
+    quizer.get_question()
 
 
-collect_data(15)
+quiz_maker_tests()

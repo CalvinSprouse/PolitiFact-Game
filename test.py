@@ -1,4 +1,5 @@
 from collections import Counter
+import config
 import datetime
 import pyinputplus as pyip
 import time
@@ -8,9 +9,8 @@ import question_getter
 LIST_SIZE = 10
 
 # variables the real game will have to manage, maybe class?
-answer_whitelist = ["pants-fire", "false", "barely-true", "half-true", "mostly-true", "true"]
-qg = question_getter.QuestionGetter("https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/", answer_whitelist)
-question_list = qg.generate_url_list(size=LIST_SIZE, answer_whitelist=answer_whitelist, order_randomized=True)  # a list of pre-genned urls to questions whose answers are in the answer whitelist
+qg = question_getter.QuestionGetter("https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/", config.ANSWER_WHITELIST)
+question_list = qg.generate_url_list(size=LIST_SIZE, answer_whitelist=config.ANSWER_WHITELIST, order_randomized=True)
 answered_list = []  # will be used as a url blacklist to store questions already asked, maybe later a dict to store answers or something for a right/wrong review
 
 
@@ -35,8 +35,8 @@ def pick_question():
 
     # if the question list is dry generate more questions
     if len(question_list) <= 0:
-        question_list = qg.generate_url_list(size=LIST_SIZE, answer_whitelist=answer_whitelist, link_blacklist=answered_list, order_randomized=True)
-    return question_getter.QuestionGetter(url=question, answer_whitelist=answer_whitelist)
+        question_list = qg.generate_url_list(size=LIST_SIZE, answer_whitelist=config.ANSWER_WHITELIST, link_blacklist=answered_list, order_randomized=True)
+    return question_getter.QuestionGetter(url=question, answer_whitelist=config.ANSWER_WHITELIST)
 
 
 # run a very dumb quiz
@@ -57,6 +57,7 @@ def test_class():
         qg = pick_question()
 
 
+# collects information on potential answers
 def collect_data(run_time):
     global qg
 
@@ -92,6 +93,11 @@ def collect_data(run_time):
     with open("data.txt", "w") as writer:
         writer.write("Total Questions: " + str(question_num))
         writer.write(str(dict(Counter(responses_list))))
+
+
+# test the quiz maker class
+def quiz_maker_tests():
+    pass
 
 
 collect_data(15)

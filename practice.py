@@ -1,5 +1,6 @@
 '''
 type() is my new best friend
+ONLY USED AS A LEARNING PLATFORM NOT NECCESARY FOR GAME BUT KEPT ANYWAYS
 '''
 
 from bs4 import BeautifulSoup

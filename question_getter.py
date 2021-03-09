@@ -105,7 +105,11 @@ class QuestionGetter:
     def get_original_source_text(self):
         return self.original_source_text
 
-    def get_new_url(self, answer_whitelist, link_blacklist=[], timeout=1, recursion_depth=0):
+    def get_new_url(self, answer_whitelist=None, link_blacklist=[], timeout=1, recursion_depth=0):
+        # initialize some function variables
+        if answer_whitelist is None:
+            answer_whitelist = self.answer_whitelist
+
         if link_blacklist:
             if self.url not in link_blacklist:
                 link_blacklist.append(self.url)
@@ -134,12 +138,16 @@ class QuestionGetter:
                     return new_url
         return self.get_new_url(link_blacklist=link_blacklist, answer_whitelist=answer_whitelist, timeout=timeout, recursion_depth=recursion_depth+1)
 
-    def generate_url_list(self, size, answer_whitelist, generated=[], link_blacklist=[], timeout=1, order_randomized=False):
+    def generate_url_list(self, size, answer_whitelist=None, generated=[], link_blacklist=[], timeout=1, order_randomized=False):
+        # generate optional paramter default values
+        if answer_whitelist is None:
+            answer_whitelist = self.answer_whitelist
+
         # returns a list of non-duplicate urls so the game can save/randomize
         generated.append((self.get_new_url(answer_whitelist=answer_whitelist, link_blacklist=link_blacklist, timeout=timeout)))
         link_blacklist.append(generated[-1])
 
-        # RECUSION
+        # RECURSION
         if len(generated) < size:
             self.generate_url_list(size=size,
                                    answer_whitelist=answer_whitelist,
@@ -155,3 +163,25 @@ class QuestionGetter:
 
 class GenerationTimeoutError (Exception):
     pass
+
+
+# a class to handle the question list and getting a question, storing answers etc (effectively a clas to handle test.py functions)
+class QuizMaker:
+    def __init__(self, question_generator: QuestionGetter):
+        self.question_generator = question_generator
+
+        # initiate variables
+        self.question_list = []
+        self.question_dict = {}
+        # the question list will be added to the dict in the below form
+
+    # each question should be assigned in a dict a number in the form ["1"] = ["question", "corect answer", "player answer"]
+    def get_question(self):
+        print(self.question_list)
+        question = self.question_list.pop(0)
+        print(question)
+        print(self.question_list)
+
+    # populates the question list
+    def populate_question_list(self, count: int, answer_whitelist=None, timeout=1, order_randomized=True):
+        self.question_list.extend(self.question_generator.generate_url_list(size=count, answer_whitelist=answer_whitelist, timeout=timeout, order_randomized=order_randomized))

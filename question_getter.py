@@ -163,25 +163,3 @@ class QuestionGetter:
 
 class GenerationTimeoutError (Exception):
     pass
-
-
-# a class to handle the question list and getting a question, storing answers etc (effectively a clas to handle test.py functions)
-class QuizMaker:
-    def __init__(self, question_generator: QuestionGetter):
-        self.question_generator = question_generator
-
-        # initiate variables
-        self.question_list = []
-        self.question_dict = {}
-        # the question list will be added to the dict in the below form
-
-    # each question should be assigned in a dict a number in the form ["1"] = ["question", "corect answer", "player answer"]
-    def get_question(self):
-        print(self.question_list)
-        question = self.question_list.pop(0)
-        print(question)
-        print(self.question_list)
-
-    # populates the question list
-    def populate_question_list(self, count: int, answer_whitelist=None, timeout=1, order_randomized=True):
-        self.question_list.extend(self.question_generator.generate_url_list(size=count, answer_whitelist=answer_whitelist, timeout=timeout, order_randomized=order_randomized))

@@ -93,12 +93,3 @@ def collect_data(run_time):
     with open("data.txt", "w") as writer:
         writer.write("Total Questions: " + str(question_num))
         writer.write(str(dict(Counter(responses_list))))
-
-
-# test the quiz maker class
-def quiz_maker_tests():
-    quizer = question_getter.QuizMaker(question_generator=qg)
-    quizer.get_question()
-
-
-quiz_maker_tests()

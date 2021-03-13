@@ -3,6 +3,7 @@
 
 data.txt
 /Data/*
+/Extra/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

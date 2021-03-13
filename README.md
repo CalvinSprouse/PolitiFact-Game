@@ -1,18 +1,10 @@
 # PolitiFact-Game
 Are you smarter than a tweet?
 
-# Project
-Player has x time to respond
-Right or wrong display "origin"/explanation
-Score of 10?
-Learning experience
-Potential easy/hard mode in easy mode the original source is provided in hard mode you must base your response only on the provided information from the website, slightly meta
-Save questions/responses to give to the player for later
-Find some way to implement lives/max questions
-Consider multithreading for these questions cause holy hell they take forever
-
--Next question
--Make sure the QG cant duplicate questions
--Randomize initial question somehow
--Access post by politifact
--Query player with question in quotations
+# To Play
+go here: https://drive.google.com/drive/folders/1fhgN7yjeomL08vuJGFCGIlxDIaVnrT4U?usp=sharing
+download the run.zip
+unzip it
+hit run.exe
+if windows security appears click show more and run anyway (I promise it's safe)
+source code is on github at CalvinSprouse/PolitiFact-Game

@@ -163,3 +163,8 @@ class QuestionGetter:
 
 class GenerationTimeoutError (Exception):
     pass
+
+
+if __name__ == "__main__":
+    qg = QuestionGetter("https://www.politifact.com/factchecks/2021/mar/05/mike-pence/pence-falsely-says-if-hr-1-passes-millions-people-/", config.ANSWER_WHITELIST)
+    print(qg.get_original_source_link())

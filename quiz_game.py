@@ -234,10 +234,11 @@ class EndView(arcade.View):
             else:
                 self.sprite_list.append(Button(SCREEN_WIDTH*2/3, 100, 300, 100, arcade.color.BROWN, "View Incorrect Answers", "view"))
         else:
-            self.sprite_list.append(Button(SCREEN_WIDTH/5, 100, 100, 100, arcade.color.BROWN, "Previous", "prev"))
-            self.sprite_list.append(Button(SCREEN_WIDTH*2/5, 100, 100, 100, arcade.color.BROWN, "Next", "next"))
-            self.sprite_list.append(Button(SCREEN_WIDTH*3/5, 100, 100, 100, arcade.color.BROWN, "Open", "open"))
-            self.sprite_list.append(Button(SCREEN_WIDTH*4/5, 100, 100, 100, arcade.color.BROWN, "Exit", "exit"))
+            self.sprite_list.append(Button(SCREEN_WIDTH/6, 100, 100, 100, arcade.color.BROWN, "Previous", "prev"))
+            self.sprite_list.append(Button(SCREEN_WIDTH*2/6, 100, 100, 100, arcade.color.BROWN, "Next", "next"))
+            self.sprite_list.append(Button(SCREEN_WIDTH*3/6, 100, 120, 100, arcade.color.BROWN, "Open PolitiFact", "open-p"))
+            self.sprite_list.append(Button(SCREEN_WIDTH*4/6, 100, 120, 100, arcade.color.BROWN, "Open Original", "open-o"))
+            self.sprite_list.append(Button(SCREEN_WIDTH*5/6, 100, 100, 100, arcade.color.BROWN, "Exit", "exit"))
 
     def on_show(self):
         arcade.set_background_color(arcade.csscolor.DARK_BLUE)
@@ -290,8 +291,15 @@ class EndView(arcade.View):
             elif self.wrong_index <= 0:
                 self.wrong_index = len(self.wrong_list) - 1
 
-        if "open" in buttons:
+        if "open-p" in buttons:
             webbrowser.open(self.wrong_list[self.wrong_index][0], new=2, autoraise=True)
+
+        if "open-o" in buttons:
+            try:
+                qg = question_getter.QuestionGetter(self.wrong_list[self.wrong_index][0], None)
+                webbrowser.open(qg.get_original_source_link(), new=2, autoraise=True)
+            except Exception:
+                pass
 
         if "exit" in buttons:
             self.review_mode = False

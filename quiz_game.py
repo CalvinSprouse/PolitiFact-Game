@@ -72,6 +72,7 @@ class QuizView(arcade.View):
         self.sprite_list.append(Button(screen_increments*4, 100, 100, 50, arcade.color.CERULEAN, "Half True", "half-true"))
         self.sprite_list.append(Button(screen_increments*5, 100, 100, 50, arcade.color.CERULEAN_BLUE, "True", "true"))
         self.sprite_list.append(Button(50, SCREEN_HEIGHT-50, 50, 50, arcade.color.WHITE, "End", "end"))
+        self.sprite_list.append(Button(SCREEN_WIDTH-200, SCREEN_HEIGHT-50, 120, 100, arcade.color.WHITE, "View Source", "view"))
         self.get_question()
 
     def on_show(self):
@@ -123,6 +124,13 @@ class QuizView(arcade.View):
             end_view = EndView(self.answered_list)
             end_view.setup()
             self.window.show_view(end_view)
+
+        if button == "view":
+            try:
+                qg = question_getter.QuestionGetter(self.current_question_url, None)
+                webbrowser.open(qg.get_original_source_link(), new=2, autoraise=True)
+            except Exception:
+                pass
 
     def get_question(self):
         if len(self.question_list) <= 0:

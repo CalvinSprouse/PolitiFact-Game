@@ -1,5 +1,5 @@
 # PolitiFact-Game
-Are you smarter than a tweet?
+Quiz game based on data pulled from Politifact. Made for my ENG101 class.
 
 # To Play
 go here: https://drive.google.com/drive/folders/1fhgN7yjeomL08vuJGFCGIlxDIaVnrT4U?usp=sharing
